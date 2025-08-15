@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Friends Snake — Central Perk Dash</title>
+  <meta name="theme-color" content="#151518" />
+  <link rel="manifest" href="manifest.webmanifest">
+  <link rel="icon" type="image/png" sizes="192x192" href="assets/icons/icon-192x192.png">
+  <link rel="apple-touch-icon" href="assets/icons/icon-192x192.png">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div class="app">
+    <header class="topbar">
+      <div class="brand">
+        <span class="dot dot-red"></span>
+        <span class="dot dot-blue"></span>
+        <span class="dot dot-yellow"></span>
+        <span class="dot dot-green"></span>
+        <h1>Central Perk Dash</h1>
+      </div>
+      <div class="actions">
+        <button id="installBtn" class="btn ghost" hidden>Install</button>
+        <button id="muteBtn" class="btn">Mute</button>
+        <button id="pauseBtn" class="btn">Pause</button>
+        <button id="restartBtn" class="btn accent">Restart</button>
+      </div>
+    </header>
+
+    <main class="main">
+      <div class="left">
+        <canvas id="game" width="640" height="640" aria-label="Snake canvas" role="img"></canvas>
+        <div class="hud">
+          <div>Score: <span id="score">0</span></div>
+          <div>Best: <span id="best">0</span></div>
+          <div>Speed: <span id="speed">1x</span></div>
+          <div>Mode: <span id="mode">Classic</span></div>
+        </div>
+        <div class="controls">
+          <button class="dpad up" data-dir="up">▲</button>
+          <div class="h">
+            <button class="dpad left" data-dir="left">◀</button>
+            <button class="dpad right" data-dir="right">▶</button>
+          </div>
+          <button class="dpad down" data-dir="down">▼</button>
+        </div>
+      </div>
+      <div class="right">
+        <section class="card">
+          <h2>How to Play</h2>
+          <ul>
+            <li>Eat donuts to grow.</li>
+            <li>Avoid walls, your tail, and couches (obstacles).</li>
+            <li>Power‑ups: <b>Espresso</b> = speed boost, <b>Umbrella</b> = ghost (pass through once), <b>Turkey</b> = +5 points.</li>
+            <li>Use Arrow keys, WASD, or the on‑screen pad.</li>
+          </ul>
+        </section>
+        <section class="card">
+          <h2>Themes</h2>
+          <div class="theme-row">
+            <button class="btn tiny theme" data-theme="classic">Classic</button>
+            <button class="btn tiny theme" data-theme="soho">SoHo Night</button>
+            <button class="btn tiny theme" data-theme="loft">Loft Day</button>
+          </div>
+        </section>
+      </div>
+    </main>
+
+    <footer class="footer">
+      <small>Original assets & code. Not affiliated with the TV show. Works offline as a PWA.</small>
+    </footer>
+  </div>
+
+  <script src="script.js"></script>
+  <script>
+    // PWA install
+    let deferredPrompt;
+    const installBtn = document.getElementById('installBtn');
+    window.addEventListener('beforeinstallprompt', (e) => {
+      e.preventDefault();
+      deferredPrompt = e;
+      installBtn.hidden = false;
+    });
+    installBtn?.addEventListener('click', async () => {
+      installBtn.hidden = true;
+      if (deferredPrompt) {
+        deferredPrompt.prompt();
+        await deferredPrompt.userChoice;
+        deferredPrompt = null;
+      }
+    });
+
+    // Service worker
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', () => {
+        navigator.serviceWorker.register('./service-worker.js');
+      });
+    }
+  </script>
+</body>
+</html>
